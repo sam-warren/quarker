@@ -12,11 +12,12 @@ import DemoSandbox from "./scene/DemoSandbox";
 import DemoChain from "./scene/DemoChain";
 import DemoDistanceJoint from "./scene/DemoDistanceJoint";
 import DemoRevoluteJoint from "./scene/DemoRevoluteJoint";
+import DemoQuarker from "./quarker/DEMOQUARKER";
 
 // Create reference to 'game' to be set onload
 let game: Phaser.Game | undefined;
-const DEFAULT_WIDTH = 1024;
-const DEFAULT_HEIGHT = 768;
+const DEFAULT_WIDTH = 1200;
+const DEFAULT_HEIGHT = 900;
 
 const config = {
   type: Phaser.WEBGL,
@@ -32,6 +33,7 @@ const config = {
     noAudio: true,
   },
   scene: [
+    DemoQuarker,
     DemoSandbox,
     DemoShapes,
     DemoEdges,
