@@ -1,5 +1,6 @@
 import Phaser from "phaser"
-import { PointGrid } from "./dots/points"
+import { Point, PointGrid } from "./points"
+import { Tile } from "./tile"
 export default class DemoQuarker extends Phaser.Scene {
   planckConfig = {
     scaleFactor: 30,
@@ -8,49 +9,34 @@ export default class DemoQuarker extends Phaser.Scene {
     speed: 1,
     hz: 60,
   }
+
+  points: { label: string; point: Point }[] = []
+
   constructor() {
     super({ key: "DemoQuarker" })
   }
 
-  preload() {}
-
-  init() {}
-
-  create() {
-      // const pointStar = new PointStar(this)
-      // this.add.existing(pointStar)
-
+  preload() {
     const pointGrid = new PointGrid(this)
     this.add.existing(pointGrid)
 
     const points = pointGrid.getPoints()
-    console.log(points)
+    this.points = points
+  }
 
+  init() {}
 
-    // const rhombus = new Rhombus(this, points, points[0], 10)
-    // this.add.existing(rhombus)
+  create() {
+    const tilePoints = [
+      { label: "0-0-0", point: this.getPointByLabel("0-0-0")! },
+      { label: "0-1-0", point: this.getPointByLabel("0-1-0")! },
+    ]
 
-    // Center the camera at (0,0)
-    // this.cameras.main.setPosition(0, 0);
-    // this.cameras.main.centerOn(0, 0);
+    const tile = new Tile(this, tilePoints)
+    this.add.existing(tile)
+  }
 
-    // const tile = new Tile(this, {
-    //   position: new Phaser.Math.Vector2(0, 0),
-    //   color: 0xffffff,
-    // })
-
-    // this.add.existing(tile)
-
-    // const plane = new Plane(this, [tile])
-    // plane.createTiling(0, 0, 10, 0xffffff)
-
-    // const grid = new Grid({
-    //   scene: this,
-    //   color: 0xffffff,
-    //   lineWidth: 0.5,
-    //   radius: 250,
-    // })
-
-    // this.add.existing(grid)
+  getPointByLabel(label: string) {
+    return this.points.find((location) => location.label === label)?.point
   }
 }

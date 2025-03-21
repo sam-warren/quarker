@@ -35,13 +35,21 @@ export class PointGrid extends Phaser.GameObjects.Group {
     this.createRecursiveGrid(centerX, centerY, this.baseSpacing, 0)
   }
 
-  createRecursiveGrid(centerX: number, centerY: number, spacing: number, depth: number) {
+  createRecursiveGrid(
+    centerX: number,
+    centerY: number,
+    spacing: number,
+    depth: number
+  ) {
     // Stop if we've reached max depth
     if (depth >= this.maxDepth) return
 
     // Create center point
     const centerLabel = `${depth}-0-0`
-    this.addPointIfNotExists(new Point(this.scene, centerX, centerY), centerLabel)
+    this.addPointIfNotExists(
+      new Point(this.scene, centerX, centerY),
+      centerLabel
+    )
 
     // Create main axis points
     for (let angle = 0; angle < 360; angle += 60) {
