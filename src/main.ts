@@ -16,8 +16,8 @@ import DemoQuarker from "./quarker/DEMOQUARKER";
 
 // Create reference to 'game' to be set onload
 let game: Phaser.Game | undefined;
-const DEFAULT_WIDTH = 1200;
-const DEFAULT_HEIGHT = 900;
+const DEFAULT_WIDTH = window.innerWidth * 0.99;
+const DEFAULT_HEIGHT = window.innerHeight * 0.99;
 
 const config = {
   type: Phaser.WEBGL,

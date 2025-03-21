@@ -1,6 +1,5 @@
 import Phaser from "phaser"
 import { PointGrid } from "./dots/points"
-
 export default class DemoQuarker extends Phaser.Scene {
   planckConfig = {
     scaleFactor: 30,
@@ -23,6 +22,13 @@ export default class DemoQuarker extends Phaser.Scene {
 
     const pointGrid = new PointGrid(this)
     this.add.existing(pointGrid)
+
+    const points = pointGrid.getPoints()
+    console.log(points)
+
+
+    // const rhombus = new Rhombus(this, points, points[0], 10)
+    // this.add.existing(rhombus)
 
     // Center the camera at (0,0)
     // this.cameras.main.setPosition(0, 0);

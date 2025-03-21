@@ -21,8 +21,10 @@ export class Point extends Phaser.GameObjects.Graphics {
   }
 }
 
-export class PointStar extends Phaser.GameObjects.Group {
-  private points: Point[] = []
+export class PointGrid extends Phaser.GameObjects.Group {
+  public pointLocations: { label: string; point: Point }[] = []
+  private maxDepth: number = 5 // Maximum recursion depth
+  private baseSpacing: number = 1000 // Base spacing between points
 
   constructor(scene: Phaser.Scene) {
     super(scene)
@@ -30,59 +32,37 @@ export class PointStar extends Phaser.GameObjects.Group {
     const centerX = scene.cameras.main.centerX
     const centerY = scene.cameras.main.centerY
 
-    // Create vertical line
-    for (let j = -5; j <= 5; j++) {
-      this.points.push(new Point(scene, centerX, centerY + j * 100))
-    }
+    this.createRecursiveGrid(centerX, centerY, this.baseSpacing, 0)
+  }
 
-    // Create rotated line (60 degrees)
-    const angle = Phaser.Math.DegToRad(60)
-    for (let j = -5; j <= 5; j++) {
-      const rotatedX = centerX + j * 100 * Math.sin(angle)
-      const rotatedY = centerY + j * 100 * Math.cos(angle)
-      this.points.push(new Point(scene, rotatedX, rotatedY))
-    }
+  createRecursiveGrid(centerX: number, centerY: number, spacing: number, depth: number) {
+    // Stop if we've reached max depth
+    if (depth >= this.maxDepth) return
 
-    // Create rotated line (120 degrees)
-    const angle2 = Phaser.Math.DegToRad(120)
-    for (let j = -5; j <= 5; j++) {
-      const rotatedX = centerX + j * 100 * Math.sin(angle2)
-      const rotatedY = centerY + j * 100 * Math.cos(angle2)
-      this.points.push(new Point(scene, rotatedX, rotatedY))
+    // Create center point
+    const centerLabel = `${depth}-0-0`
+    this.addPointIfNotExists(new Point(this.scene, centerX, centerY), centerLabel)
+
+    // Create main axis points
+    for (let angle = 0; angle < 360; angle += 60) {
+      const radian = Phaser.Math.DegToRad(angle)
+      const x = centerX + spacing * Math.sin(radian)
+      const y = centerY + spacing * Math.cos(radian)
+      const label = `${depth}-1-${angle}`
+      this.addPointIfNotExists(new Point(this.scene, x, y), label)
+
+      // Recursively create sub-grid at this point
+      this.createRecursiveGrid(x, y, spacing / 2, depth + 1)
     }
   }
-}
 
-export class PointGrid extends Phaser.GameObjects.Group {
-  private points: Point[] = []
-
-  constructor(scene: Phaser.Scene) {
-    super(scene)
-
-    const centerX = scene.cameras.main.centerX
-    const centerY = scene.cameras.main.centerY
-
-    // Create vertical line and for each point, create rotated lines
-    for (let j = -5; j <= 5; j++) {
-      const verticalY = centerY + j * 100
-      // Add the vertical point
-      this.points.push(new Point(scene, centerX, verticalY))
-
-      // Create rotated line (60 degrees) for this vertical point
-      const angle = Phaser.Math.DegToRad(60)
-      for (let k = -5; k <= 5; k++) {
-        const rotatedX = centerX + k * 100 * Math.sin(angle)
-        const rotatedY = verticalY + k * 100 * Math.cos(angle)
-        this.points.push(new Point(scene, rotatedX, rotatedY))
-      }
-
-      // Create rotated line (120 degrees) for this vertical point
-      const angle2 = Phaser.Math.DegToRad(120)
-      for (let k = -5; k <= 5; k++) {
-        const rotatedX = centerX + k * 100 * Math.sin(angle2)
-        const rotatedY = verticalY + k * 100 * Math.cos(angle2)
-        this.points.push(new Point(scene, rotatedX, rotatedY))
-      }
+  addPointIfNotExists(point: Point, label: string) {
+    if (!this.pointLocations.find((location) => location.point === point)) {
+      this.pointLocations.push({ label, point })
     }
+  }
+
+  getPoints() {
+    return this.pointLocations
   }
 }
